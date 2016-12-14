@@ -4,30 +4,54 @@
 // @author colinrb@uci.edu
 
 
-///////////////////////////////// DEFINITIONS /////////////////////////////////
-
-#define TITLE    " _   _                  ___  ___ \n| | | |                 |  \\/  | \n| |_| | __ _ _ __   __ _| .  . | __ _ _ __ \n|  _  |/ _` | '_ \\ / _` | |\\/| |/ _` | '_ \\ \n| | | | (_| | | | | (_| | |  | | (_| | | | | \n\\_| |_/\\__,_|_| |_|\\__, \\_|  |_/\\__,_|_| |_| \n                    __/ | \n      _______      |___/       version Beta \n      |     | \n      |     O \n      |    /|\\ \n      |    / \\         by Colin Brown \n  ____|________           colinrb@uci.edu \n /    |       /| \n/____________/ / \n|____________|/"
-#define COMMANDS "Commands: \n-------------------- \nS     Start new game \nQ               Quit"
-#define STATE_0  "      _______ \n      |     | \n      | \n      | \n      | \n  ____|________ \n /    |       /| \n/____________/ / \n|____________|/"
-#define STATE_1  "      _______ \n      |     | \n      |     O \n      | \n      | \n  ____|________ \n /    |       /| \n/____________/ / \n|____________|/"
-#define STATE_2  "      _______ \n      |     | \n      |     O \n      |     | \n      | \n  ____|________ \n /    |       /| \n/____________/ / \n|____________|/"
-#define STATE_3  "      _______ \n      |     | \n      |     O \n      |    /| \n      | \n  ____|________ \n /    |       /| \n/____________/ / \n|____________|/"
-#define STATE_4  "      _______ \n      |     | \n      |     O \n      |    /|\\ \n      | \n  ____|________ \n /    |       /| \n/____________/ / \n|____________|/"
-#define STATE_5  "      _______ \n      |     | \n      |     O \n      |    /|\\ \n      |    / \n  ____|________ \n /    |       /| \n/____________/ / \n|____________|/"
-#define STATE_6  "      _______ \n      |     | \n      |     O \n      |    /|\\ \n      |    / \\ \n  ____|________ \n /    |       /| \n/____________/ / \n|____________|/"
-
-
 ////////////////////////////////// INCLUSIONS /////////////////////////////////
 
 #include <iostream>
 #include <algorithm>
+#include <fstream>
+#include <vector>
 
 
-////////////////////////////////// FUNCTIONS //////////////////////////////////
+////////////////////////////////// CONSTANTS //////////////////////////////////
+
+
+// Graphics
+const std::string TITLE    = " _   _                  ___  ___ \n| | | |                 |  \\/  | \n| |_| | __ _ _ __   __ _| .  . | __ _ _ __ \n|  _  |/ _` | '_ \\ / _` | |\\/| |/ _` | '_ \\ \n| | | | (_| | | | | (_| | |  | | (_| | | | | \n\\_| |_/\\__,_|_| |_|\\__, \\_|  |_/\\__,_|_| |_| \n                    __/ | \n      _______      |___/       version Beta \n      |     | \n      |     O \n      |    /|\\ \n      |    / \\         by Colin Brown \n  ____|________           colinrb@uci.edu \n /    |       /| \n/____________/ / \n|____________|/";
+const std::string STATE_0  = "      _______ \n      |     | \n      | \n      | \n      | \n  ____|________ \n /    |       /| \n/____________/ / \n|____________|/";
+const std::string STATE_1  = "      _______ \n      |     | \n      |     O \n      | \n      | \n  ____|________ \n /    |       /| \n/____________/ / \n|____________|/";
+const std::string STATE_2  = "      _______ \n      |     | \n      |     O \n      |     | \n      | \n  ____|________ \n /    |       /| \n/____________/ / \n|____________|/";
+const std::string STATE_3  = "      _______ \n      |     | \n      |     O \n      |    /| \n      | \n  ____|________ \n /    |       /| \n/____________/ / \n|____________|/";
+const std::string STATE_4  = "      _______ \n      |     | \n      |     O \n      |    /|\\ \n      | \n  ____|________ \n /    |       /| \n/____________/ / \n|____________|/";
+const std::string STATE_5  = "      _______ \n      |     | \n      |     O \n      |    /|\\ \n      |    / \n  ____|________ \n /    |       /| \n/____________/ / \n|____________|/";
+const std::string STATE_6  = "      _______ \n      |     | \n      |     O \n      |    /|\\ \n      |    / \\ \n  ____|________ \n /    |       /| \n/____________/ / \n|____________|/";
+
+// Text
+const std::string COMMANDS = "Commands: \n-------------------- \nS     Start new game \nQ               Quit";
+
+// Directories
+const std::string VOCAB_FOLDER = "vocab/";
+
+/////////////////////////////////// HELPERS ///////////////////////////////////
+
+/*
+    @return: Parameter string converted to uppercase
+*/
+void toUppercase(std::string& s) {
+    transform(s.begin(), s.end(), s.begin(), ::toupper);
+}
+
+
+/*
+    @return: Parameter string converted to lowercase
+*/
+void toLowercase(std::string& s) {
+    transform(s.begin(), s.end(), s.begin(), ::tolower);
+}
+
 
 /*
     Prints the command prompt.
-    @return std::string: User input
+    @return: User input
 */
 std::string prompt() {
     std::cout << "\n>> ";
@@ -39,10 +63,50 @@ std::string prompt() {
 
 
 /*
+    @return: List of lines in the given file
+*/
+std::vector<std::string> readLines(std::string filename) {
+    std::ifstream infile(filename);
+    std::string line;
+    std::vector<std::string> list;
+
+    while(getline(infile, line)) {
+        list.push_back(line);
+    }
+
+    return list;
+}
+
+
+////////////////////////////////// FUNCTIONS //////////////////////////////////
+
+/*
+    Prompts the user for which vocabulary list to use.
+    @return: List of vocab words
+*/
+std::vector<std::string> promptVocab() {
+    std::cout << "What vocabulary list do you want to use?" << std::endl;
+    std::cout << "    1. Food" << std::endl;
+
+    while(true) {
+        std::string response = prompt();
+        toLowercase(response);
+
+        if(response == "1" || response == "food")
+            return readLines(VOCAB_FOLDER + "food.txt");
+        else
+            std::cout << "The vocabulary list \"" << response << "\" is not recognized." << std::endl;
+    }
+}
+
+
+/*
     Simulates a game of Hangman.
-    @return void: When game is finished
+    @return: When game is finished
 */
 void play() {
+    std::vector<std::string> vocab = promptVocab();
+
     std::cout << "Game Over." << std::endl;
     return;
 }
@@ -55,12 +119,12 @@ void play() {
    @return 0: User exited the game
    @return 1: User started a new game
 */
-int main_menu() {
+int mainMenu() {
     std::cout << "\n" << TITLE << "\n\n" << COMMANDS << "\n";
 
     while(true) {
         std::string command = prompt();
-        transform(command.begin(), command.end(), command.begin(), ::toupper);
+        toUppercase(command);
 
         if(command == "S")
             return 1;
@@ -77,7 +141,7 @@ int main_menu() {
 int main(int argc, char const *argv[])
 {
     while(true) {
-        switch(main_menu()) {
+        switch(mainMenu()) {
             case 0:
                 return 0;
             case 1:
