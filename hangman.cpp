@@ -187,7 +187,7 @@ std::vector<std::string> promptVocab() {
 /*
     Prompts the user for a letter.
     Ensures that the letter is valid and not previously used.
-    @return: char (A-z)
+    @return: char (A-Z)
 */
 char makeGuess(std::set<char>& guesses) {
     while(true) {
@@ -218,7 +218,7 @@ char makeGuess(std::set<char>& guesses) {
     Prints the state of the game in the format:
     <Hang State>
     <Word Progress>
-    <Wrong Characters>
+    <Wrong Guesses> (if there are any)
 */
 void printTurn(int hangProgress, std::string word, std::set<char> guesses, std::set<char> badGuesses) {
     std::cout << STATE[hangProgress] << "\n" << std::endl;
@@ -272,7 +272,7 @@ void play() {
 
     // std::cout << "Your word is: " << word << std::endl; // debugging
 
-    while(hangProgress < 8) {
+    while(hangProgress < 7) {
         std::cout << DELIMITER << std::endl;
         printTurn(hangProgress, word, guesses, badGuesses);
 
@@ -290,7 +290,7 @@ void play() {
     }
 
     if(hangProgress >= 7) {
-        std::cout << "\n" << GAME_OVER << std::endl;
+        std::cout << GAME_OVER << std::endl;
         std::cout << "\nYour word was: " << word << "." << std::endl;
     }
     else
