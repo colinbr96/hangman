@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <fstream>
 #include <vector>
+#include <random>
 
 
 ////////////////////////////////// CONSTANTS //////////////////////////////////
@@ -30,6 +31,7 @@ const std::string COMMANDS = "Commands: \n-------------------- \nS     Start new
 
 // Directories
 const std::string VOCAB_FOLDER = "vocab/";
+
 
 /////////////////////////////////// HELPERS ///////////////////////////////////
 
@@ -78,6 +80,18 @@ std::vector<std::string> readLines(std::string filename) {
 }
 
 
+/*
+    @return: Single random element of given vector
+*/
+template<typename T>
+T pickRandomElement(std::vector<T> v) {
+   std::random_device seed;
+   std::mt19937 engine(seed());
+   std::uniform_int_distribution<int> choose(0, v.size()-1);
+   return v[choose(engine)];
+}
+
+
 ////////////////////////////////// FUNCTIONS //////////////////////////////////
 
 /*
@@ -105,7 +119,10 @@ std::vector<std::string> promptVocab() {
     @return: When game is finished
 */
 void play() {
-    std::vector<std::string> vocab = promptVocab();
+    std::vector<std::string> vocabList = promptVocab();
+    std::string word = pickRandomElement(vocabList);
+
+    std::cout << "Your word is " << word << std::endl;
 
     std::cout << "Game Over." << std::endl;
     return;
