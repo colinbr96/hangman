@@ -191,7 +191,7 @@ std::vector<std::string> promptVocab() {
 */
 char makeGuess(std::set<char>& guesses) {
     while(true) {
-        std::cout << "\nNext Guess: ";
+        std::cout << "\nGuess a Letter: ";
         std::string userInput;
         getline(std::cin, userInput);
 
@@ -230,13 +230,15 @@ void printTurn(int hangProgress, std::string word, std::set<char> guesses, std::
             std::cout << "_ ";
     }
 
-    std::cout << "\n\nIncorrect: ";
-    int commaCount = badGuesses.size()-1;
-    for(char c : badGuesses) {
-        std::cout << c;
-        if(commaCount > 0) {
-            std::cout << ", ";
-            --commaCount;
+    if(!badGuesses.empty()) {
+        std::cout << "\n\nIncorrect: ";
+        int commaCount = badGuesses.size()-1;
+        for(char c : badGuesses) {
+            std::cout << c;
+            if(commaCount > 0) {
+                std::cout << ", ";
+                --commaCount;
+            }
         }
     }
     std::cout << std::endl;
